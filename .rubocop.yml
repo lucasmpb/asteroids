@@ -1,0 +1,32 @@
+AllCops:
+  TargetRubyVersion: 2.3
+
+AbcSize:
+  Enabled: false
+
+ClassLength:
+  Enabled: false
+
+Documentation:
+  Enabled: false
+
+FrozenStringLiteralComment:
+  Enabled: false
+
+LineLength:
+  Enabled: false
+
+LambdaCall:
+  Enabled: false
+
+MethodLength:
+  Max: 15
+
+ParallelAssignment:
+  Enabled: false
+
+Rails:
+  Enabled: true
+
+RaiseArgs:
+  Enabled: false
