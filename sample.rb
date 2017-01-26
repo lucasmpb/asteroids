@@ -1,11 +1,13 @@
+require 'optparse'
 require 'gosu'
 require_relative 'player'
 require_relative 'star'
 
 class SampleWindow < Gosu::Window
-  def initialize
+  def initialize(options)
     super 640, 480
     self.caption = "Sample Game"
+    @options = options
 
     @background_image = Gosu::Image.new("media/space.png", :tileable => true)
 
@@ -42,6 +44,7 @@ class SampleWindow < Gosu::Window
     @background_image.draw(0, 0, 0);
     @stars.each { |star| star.draw }
     @font.draw("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, 0xff_ffff00)
+    @font.draw("Stars: #{@stars.size}", 550, 10, ZOrder::UI, 1.0, 1.0, 0xff_ffff00) if @options[:debug]
   end
 
   def button_down(id)
@@ -55,5 +58,18 @@ module ZOrder
   Background, Stars, Player, UI = *0..3
 end
 
-window = SampleWindow.new
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: sample.rb [options]"
+
+  opts.on("-d", "--debug", "Show debug info") do |v|
+    options[:debug] = v
+  end
+end.parse!
+
+puts options if options[:debug]
+
+window = SampleWindow.new(options)
 window.show
+
+
