@@ -1,9 +1,12 @@
 class Player
   def initialize
-    @image = Gosu::Image.new("media/starfighter.bmp")
+    @image = Gosu::Image.new("media/player.png")
     @beep = Gosu::Sample.new("media/beep.wav")
     @x = @y = @vel_x = @vel_y = @angle = 0.0
     @score = 0
+
+    @fire_anim = Gosu::Image::load_tiles("media/fire.png", 32, 32)
+    @fire = Fire.new(@fire_anim)
   end
 
   def score
@@ -47,9 +50,12 @@ class Player
 
     @vel_x *= 0.95
     @vel_y *= 0.95
+
+    @fire.update(@x, @y, @angle)
   end
 
   def draw
     @image.draw_rot(@x, @y, 1, @angle)
+    @fire.draw
   end
 end

@@ -1,5 +1,6 @@
 require 'optparse'
 require 'gosu'
+require_relative 'fire'
 require_relative 'player'
 require_relative 'star'
 
@@ -44,7 +45,9 @@ class SampleWindow < Gosu::Window
     @background_image.draw(0, 0, 0);
     @stars.each { |star| star.draw }
     @font.draw("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, 0xff_ffff00)
-    @font.draw("Stars: #{@stars.size}", 550, 10, ZOrder::UI, 1.0, 1.0, 0xff_ffff00) if @options[:debug]
+    if @options[:debug]
+      @font.draw("Stars: #{@stars.size}", 550, 10, ZOrder::UI, 1.0, 1.0, 0xff_ffff00)
+    end
   end
 
   def button_down(id)
