@@ -51,7 +51,7 @@ class Player
     @vel_x *= 0.95
     @vel_y *= 0.95
 
-    @fire.update(@x, @y, @angle)
+    @fire.update(@x, @y, @angle, @vel_x, @vel_y)
   end
 
   def draw
