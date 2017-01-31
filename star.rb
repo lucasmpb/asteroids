@@ -17,8 +17,8 @@ class Star
   def update
     @x += Gosu::offset_x(@angle, @speed)
     @y += Gosu::offset_y(@angle, @speed)
-    @x %= 640
-    @y %= 480
+    @x %= SampleWindow::SCREEN_WIDTH
+    @y %= SampleWindow::SCREEN_HEIGHT
   end
 
   def draw  
