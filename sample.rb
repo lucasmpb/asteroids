@@ -1,19 +1,23 @@
 require 'optparse'
 require 'gosu'
+require_relative 'bullet'
 require_relative 'fire'
 require_relative 'player'
 require_relative 'star'
 
 class SampleWindow < Gosu::Window
+  SCREEN_WIDTH = 800
+  SCREEN_HEIGHT = 600
+
   def initialize(options)
-    super 640, 480
+    super SCREEN_WIDTH, SCREEN_HEIGHT
     self.caption = "Sample Game"
     @options = options
 
     @background_image = Gosu::Image.new("media/space.png", :tileable => true)
 
     @player = Player.new
-    @player.warp(320, 240)
+    @player.warp(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
     @star_anim = Gosu::Image::load_tiles("media/star.png", 25, 25)
     @stars = Array.new
@@ -46,13 +50,17 @@ class SampleWindow < Gosu::Window
     @stars.each { |star| star.draw }
     @font.draw("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, 0xff_ffff00)
     if @options[:debug]
-      @font.draw("Stars: #{@stars.size}", 550, 10, ZOrder::UI, 1.0, 1.0, 0xff_ffff00)
+      @font.draw("Stars: #{@stars.size}", 700, 10, ZOrder::UI, 1.0, 1.0, 0xff_ffff00)
+      @font.draw("FPS: #{1000.0 / update_interval}", 700, 550, ZOrder::UI, 1.0, 1.0, 0xff_ffff00)
     end
   end
 
   def button_down(id)
     if id == Gosu::KbEscape
       close
+    end
+    if id == Gosu::KbSpace
+      @player.fire_bullet
     end
   end
 end
