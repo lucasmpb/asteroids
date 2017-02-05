@@ -25,29 +25,29 @@ class SampleWindow < Gosu::Window
 
     @font = Gosu::Font.new(20)
 
-    @meteor_img = Gosu::Image.new("media/meteor.png")
-    @meteors = Array.new
+    @meteor_img = Gosu::Image.new('media/meteor.png')
+    @meteors = []
   end
 
   def update
     @player.turn_left if go_left?
-    @player.turn_right if go_right
+    @player.turn_right if go_right?
     @player.accelerate if go_forward?
     @player.move
     @player.collect_stars(@stars)
 
-    @stars.push(Star.new(@star_anim)) if rand(100) < 4 && @stars.size < 250
+    @stars.push(Star.new(@star_anim)) if add_star?
     @stars.each(&:update)
-    if rand(100) < 2 and @meteors.select(&:main_meteor).size < 4 then
-      @meteors.push(Meteor.new(@meteor_img))
-    end
-    @meteors.each { |meteor| meteor.update }
+
+    @meteors.push(Meteor.new(@meteor_img)) if add_meteor?
+    @meteors.each(&:update)
   end
 
   def draw
     @player.draw
-    @background_image.draw(0, 0, 0);
-    @stars.each { |star| star.draw }
+    @background_image.draw(0, 0, 0)
+    @stars.each(&:draw)
+    @meteors.each(&:draw)
     @font.draw("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, 0xff_ffff00)
     return unless @options[:debug]
     # DEBUG CODE STARTS HERE
@@ -62,6 +62,14 @@ class SampleWindow < Gosu::Window
 
   private
 
+  def add_star?
+    rand(100) < 4 && @stars.size < 250
+  end
+
+  def add_meteor?
+    (rand(100) < 4) && (@meteors.select(&:main_meteor).size < 3)
+  end
+
   def go_left?
     (Gosu.button_down? Gosu::KbLeft) || (Gosu.button_down? Gosu::GpLeft)
   end
@@ -70,13 +78,13 @@ class SampleWindow < Gosu::Window
     (Gosu.button_down? Gosu::KbRight) || (Gosu.button_down? Gosu::GpRight)
   end
 
-  def go_forward
+  def go_forward?
     (Gosu.button_down? Gosu::KbUp) || (Gosu.button_down? Gosu::GpButton0)
   end
 end
 
 module ZOrder
-  BACKGROUND, STARTS, PLAYER, UI = *0..3
+  BACKGROUND, STARS, PLAYER, UI = *0..3
 end
 
 options = {}

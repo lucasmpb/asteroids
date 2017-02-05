@@ -16,14 +16,13 @@ class Meteor
   end
 
   def update
-    @x += Gosu::offset_x(@angle, @speed)
-    @y += Gosu::offset_y(@angle, @speed)
-    @x %= 640
-    @y %= 480
+    @x += Gosu.offset_x(@angle, @speed)
+    @y += Gosu.offset_y(@angle, @speed)
+    @x %= SampleWindow::SCREEN_WIDTH
+    @y %= SampleWindow::SCREEN_HEIGHT
   end
 
-  def draw  
-    @img.draw(@x - @img.width / 2.0, @y - @img.height / 2.0,
-        ZOrder::Stars, 1, 1)
+  def draw
+    @img.draw(@x - @img.width / 2.0, @y - @img.height / 2.0, ZOrder::STARS, 1, 1)
   end
 end
