@@ -14,6 +14,9 @@ class Player
     @fire = Fire.new(@fire_anim)
 
     @bullets = []
+
+    @explosion_anim = Gosu::Image.load_tiles('media/explosion.png', 64, 64)
+    @explosions = []
   end
 
   def fire_bullet
@@ -44,6 +47,7 @@ class Player
           @score += 10
           @beep.play
           @bullets.delete(bullet)
+          @explosions.push(Explosion.new(asteroid.x, asteroid.y, @explosion_anim))
           true
         else
           false
@@ -82,11 +86,14 @@ class Player
 
     @bullets.each(&:update)
     @bullets.select!(&:in_screen)
+
+    @explosions.reject!(&:finished?)
   end
 
   def draw
     @image.draw_rot(@x, @y, 1, @angle)
     @fire.draw
     @bullets.each(&:draw)
+    @explosions.each(&:draw)
   end
 end

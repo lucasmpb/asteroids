@@ -7,7 +7,6 @@ class Asteroid
     @y = rand * 480
     @size = 1 # Size could be 1, 2 or 4
     @radious = img.width / 2.0
-    puts @radious
 
     @view_angle = @angle = rand(359)
     @speed = rand(4) + 1
