@@ -11,15 +11,15 @@ class Bullet
   end
 
   def update
-    @x += Gosu::offset_x(@angle, @speed)
-    @y += Gosu::offset_y(@angle, @speed)
+    @x += Gosu.offset_x(@angle, @speed)
+    @y += Gosu.offset_y(@angle, @speed)
   end
 
-  def draw  
+  def draw
     @image.draw_rot(@x, @y, ZOrder::UI, @angle, 0.5, 1)
   end
 
   def in_screen
-    0 < @x && @x < SampleWindow::SCREEN_WIDTH && 0 < @y && @y < SampleWindow::SCREEN_HEIGHT
+    @x.positive? && @x < SampleWindow::SCREEN_WIDTH && @y.positive? && @y < SampleWindow::SCREEN_HEIGHT
   end
 end

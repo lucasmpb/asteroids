@@ -15,15 +15,14 @@ class Star
   end
 
   def update
-    @x += Gosu::offset_x(@angle, @speed)
-    @y += Gosu::offset_y(@angle, @speed)
+    @x += Gosu.offset_x(@angle, @speed)
+    @y += Gosu.offset_y(@angle, @speed)
     @x %= SampleWindow::SCREEN_WIDTH
     @y %= SampleWindow::SCREEN_HEIGHT
   end
 
-  def draw  
-    img = @animation[Gosu::milliseconds / 100 % @animation.size];
-    img.draw(@x - img.width / 2.0, @y - img.height / 2.0,
-        ZOrder::Stars, 1, 1, @color, :add)
+  def draw
+    img = @animation[Gosu.milliseconds / 100 % @animation.size]
+    img.draw(@x - img.width / 2.0, @y - img.height / 2.0, ZOrder::STARS, 1, 1, @color, :add)
   end
 end
