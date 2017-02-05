@@ -1,4 +1,4 @@
-class Meteor
+class Asteroid
   attr_reader :x, :y, :size
 
   def initialize(img)
@@ -7,11 +7,11 @@ class Meteor
     @y = rand * 480
     @size = 1 # Size could be 1, 2 or 4
 
-    @angle = rand(359)
+    @view_angle = @angle = rand(359)
     @speed = rand(4) + 1
   end
 
-  def main_meteor
+  def main_asteroid
     @size == 1
   end
 
@@ -20,9 +20,11 @@ class Meteor
     @y += Gosu.offset_y(@angle, @speed)
     @x %= SampleWindow::SCREEN_WIDTH
     @y %= SampleWindow::SCREEN_HEIGHT
+
+    @view_angle += @speed
   end
 
   def draw
-    @img.draw(@x - @img.width / 2.0, @y - @img.height / 2.0, ZOrder::STARS, 1, 1)
+    @img.draw_rot(@x, @y, ZOrder::STARS, @view_angle)
   end
 end

@@ -1,8 +1,8 @@
 require 'optparse'
 require 'gosu'
+require_relative 'asteroid'
 require_relative 'bullet'
 require_relative 'fire'
-require_relative 'meteor'
 require_relative 'player'
 require_relative 'star'
 
@@ -25,8 +25,8 @@ class SampleWindow < Gosu::Window
 
     @font = Gosu::Font.new(20)
 
-    @meteor_img = Gosu::Image.new('media/meteor.png')
-    @meteors = []
+    @asteroid_img = Gosu::Image.new('media/asteroid.png')
+    @asteroids = []
   end
 
   def update
@@ -39,15 +39,15 @@ class SampleWindow < Gosu::Window
     @stars.push(Star.new(@star_anim)) if add_star?
     @stars.each(&:update)
 
-    @meteors.push(Meteor.new(@meteor_img)) if add_meteor?
-    @meteors.each(&:update)
+    @asteroids.push(Asteroid.new(@asteroid_img)) if add_asteroid?
+    @asteroids.each(&:update)
   end
 
   def draw
     @player.draw
     @background_image.draw(0, 0, 0)
     @stars.each(&:draw)
-    @meteors.each(&:draw)
+    @asteroids.each(&:draw)
     @font.draw("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, 0xff_ffff00)
     return unless @options[:debug]
     # DEBUG CODE STARTS HERE
@@ -66,8 +66,8 @@ class SampleWindow < Gosu::Window
     rand(100) < 4 && @stars.size < 250
   end
 
-  def add_meteor?
-    (rand(100) < 4) && (@meteors.select(&:main_meteor).size < 3)
+  def add_asteroid?
+    (rand(100) < 4) && (@asteroids.select(&:main_asteroid).size < 3)
   end
 
   def go_left?
