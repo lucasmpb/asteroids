@@ -5,6 +5,7 @@ class Player
     @image = Gosu::Image.new("media/player.png")
     @bullet = Gosu::Image.new("media/bullet.png")
     @beep = Gosu::Sample.new("media/beep.wav")
+    @shoot = Gosu::Sample.new("media/shoot.wav")
     @x = @y = @vel_x = @vel_y = @angle = 0.0
     @score = 0
 
@@ -22,7 +23,10 @@ class Player
     # fire bullet from the ship tip
     bx = @x + Gosu::offset_x(@angle, 26)
     by = @y + Gosu::offset_y(@angle, 26)
-    @bullets.push(Bullet.new(bx, by, @angle, @bullet)) unless @bullets.size >= MAX_BULLETS
+    if @bullets.size < MAX_BULLETS
+      @shoot.play
+      @bullets.push(Bullet.new(bx, by, @angle, @bullet))
+    end
   end
 
   def collect_stars(stars)
