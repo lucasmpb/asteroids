@@ -12,6 +12,7 @@ class SampleWindow < Gosu::Window
 
   def initialize(options)
     super SCREEN_WIDTH, SCREEN_HEIGHT
+    @instance = self
     self.caption = 'Sample Game'
     @options = options
 
@@ -35,6 +36,7 @@ class SampleWindow < Gosu::Window
     @player.accelerate if go_forward?
     @player.move
     @player.collect_stars(@stars)
+    @player.kill_asteroids(@asteroids)
 
     @stars.push(Star.new(@star_anim)) if add_star?
     @stars.each(&:update)

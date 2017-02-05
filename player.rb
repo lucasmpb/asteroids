@@ -1,6 +1,6 @@
 class Player
   MAX_BULLETS = 3
-  attr_reader :score
+  attr_reader :score, :bullets
 
   def initialize
     @image = Gosu::Image.new('media/player.png')
@@ -33,6 +33,21 @@ class Player
         true
       else
         false
+      end
+    end
+  end
+
+  def kill_asteroids(asteroids)
+    asteroids.reject! do |asteroid|
+      @bullets.any? do |bullet|
+        if Gosu.distance(bullet.x, bullet.y, asteroid.x, asteroid.y) < asteroid.radious
+          @score += 10
+          @beep.play
+          @bullets.delete(bullet)
+          true
+        else
+          false
+        end
       end
     end
   end
