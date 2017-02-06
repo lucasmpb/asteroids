@@ -17,7 +17,7 @@ class SampleWindow < Gosu::Window
     self.caption = 'Sample Game'
     @options = options
 
-    @background_image = Gosu::Image.new('media/space.png', tileable: true)
+    @background_image = Gosu::Image.new('media/space.jpg', tileable: true)
 
     @player = Player.new
     @player.warp(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
