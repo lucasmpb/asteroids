@@ -1,19 +1,31 @@
 class Asteroid
-  attr_reader :x, :y, :size, :radious
+  attr_reader :x, :y, :size, :angle, :speed, :radious
 
-  def initialize(img)
+  def initialize(img, father = nil, angle = nil)
     @img = img
-    @x = rand * 640
-    @y = rand * 480
-    @size = 1 # Size could be 1, 2 or 4
-    @radious = img.width / 2.0
+    if father.nil?
+      @x = rand * 640
+      @y = rand * 480
+      @size = 1 # Size could be 1, 2 or 4
+      @view_angle = @angle = rand(359)
+      @speed = rand(4) + 1
+    else
+      @x = father.x
+      @y = father.y
+      @size = father.size * 2
+      @view_angle = @angle = angle
+      @speed = father.speed + rand(2)
+    end
 
-    @view_angle = @angle = rand(359)
-    @speed = rand(4) + 1
+    @radious = img.width / 2.0 / @size
   end
 
   def main_asteroid
     @size == 1
+  end
+
+  def final_asteroid?
+    @size == 4
   end
 
   def update
@@ -28,7 +40,7 @@ class Asteroid
   end
 
   def draw
-    @img.draw_rot(@x, @y, ZOrder::STARS, @view_angle)
+    @img.draw_rot(@x, @y, ZOrder::STARS, @view_angle, 0.5, 0.5, 1.0 / @size, 1.0 / @size)
   end
 
   private

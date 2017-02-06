@@ -40,14 +40,17 @@ class Player
     end
   end
 
-  def kill_asteroids(asteroids)
+  def kill_asteroids(asteroids, img)
     asteroids.reject! do |asteroid|
       @bullets.any? do |bullet|
         if Gosu.distance(bullet.x, bullet.y, asteroid.x, asteroid.y) < asteroid.radious
-          @score += 10
-          @beep.play
-          @bullets.delete(bullet)
-          @explosions.push(Explosion.new(asteroid.x, asteroid.y, @explosion_anim))
+          bullet_hits_asteroid(bullet, asteroid)
+          # add 2 new smaller asteroids
+          unless asteroid.final_asteroid?
+            [90, -90].each do |angle_offset|
+              asteroids.push(Asteroid.new(img, asteroid, asteroid.angle + angle_offset))
+            end
+          end
           true
         else
           false
@@ -95,5 +98,15 @@ class Player
     @fire.draw
     @bullets.each(&:draw)
     @explosions.each(&:draw)
+  end
+
+  private
+
+  def bullet_hits_asteroid(bullet, asteroid)
+    @score += 10
+    @beep.play
+    @bullets.delete(bullet)
+    # show an explosion
+    @explosions.push(Explosion.new(asteroid.x, asteroid.y, asteroid.size, @explosion_anim))
   end
 end

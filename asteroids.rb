@@ -37,7 +37,7 @@ class SampleWindow < Gosu::Window
     @player.accelerate if go_forward?
     @player.move
     @player.collect_stars(@stars)
-    @player.kill_asteroids(@asteroids)
+    @player.kill_asteroids(@asteroids, @asteroid_img)
 
     @stars.push(Star.new(@star_anim)) if add_star?
     @stars.each(&:update)
