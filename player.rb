@@ -103,7 +103,7 @@ class Player
   private
 
   def bullet_hits_asteroid(bullet, asteroid)
-    @score += 10
+    @score += 10 * asteroid.size
     @beep.play
     @bullets.delete(bullet)
     # show an explosion
