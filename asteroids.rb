@@ -1,6 +1,8 @@
 require 'optparse'
 require 'gosu'
+require_relative 'asteroid'
 require_relative 'bullet'
+require_relative 'explosion'
 require_relative 'fire'
 require_relative 'player'
 require_relative 'star'
@@ -11,6 +13,7 @@ class SampleWindow < Gosu::Window
 
   def initialize(options)
     super SCREEN_WIDTH, SCREEN_HEIGHT
+    @instance = self
     self.caption = 'Sample Game'
     @options = options
 
@@ -23,23 +26,31 @@ class SampleWindow < Gosu::Window
     @stars = []
 
     @font = Gosu::Font.new(20)
+
+    @asteroid_img = Gosu::Image.new('media/asteroid.png')
+    @asteroids = []
   end
 
   def update
     @player.turn_left if go_left?
-    @player.turn_right if go_right
+    @player.turn_right if go_right?
     @player.accelerate if go_forward?
     @player.move
     @player.collect_stars(@stars)
+    @player.kill_asteroids(@asteroids, @asteroid_img)
 
-    @stars.push(Star.new(@star_anim)) if rand(100) < 4 && @stars.size < 250
+    @stars.push(Star.new(@star_anim)) if add_star?
     @stars.each(&:update)
+
+    @asteroids.push(Asteroid.new(@asteroid_img)) if add_asteroid?
+    @asteroids.each(&:update)
   end
 
   def draw
     @player.draw
     @background_image.draw(0, 0, 0)
     @stars.each(&:draw)
+    @asteroids.each(&:draw)
     @font.draw("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, 0xff_ffff00)
     return unless @options[:debug]
     # DEBUG CODE STARTS HERE
@@ -54,6 +65,14 @@ class SampleWindow < Gosu::Window
 
   private
 
+  def add_star?
+    rand(100) < 4 && @stars.size < 250
+  end
+
+  def add_asteroid?
+    (rand(100) < 4) && (@asteroids.select(&:main_asteroid).size < 3)
+  end
+
   def go_left?
     (Gosu.button_down? Gosu::KbLeft) || (Gosu.button_down? Gosu::GpLeft)
   end
@@ -62,13 +81,13 @@ class SampleWindow < Gosu::Window
     (Gosu.button_down? Gosu::KbRight) || (Gosu.button_down? Gosu::GpRight)
   end
 
-  def go_forward
+  def go_forward?
     (Gosu.button_down? Gosu::KbUp) || (Gosu.button_down? Gosu::GpButton0)
   end
 end
 
 module ZOrder
-  BACKGROUND, STARTS, PLAYER, UI = *0..3
+  BACKGROUND, STARS, PLAYER, UI = *0..3
 end
 
 options = {}

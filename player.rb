@@ -1,6 +1,6 @@
 class Player
   MAX_BULLETS = 3
-  attr_reader :score
+  attr_reader :score, :bullets
 
   def initialize
     @image = Gosu::Image.new('media/player.png')
@@ -14,6 +14,9 @@ class Player
     @fire = Fire.new(@fire_anim)
 
     @bullets = []
+
+    @explosion_anim = Gosu::Image.load_tiles('media/explosion.png', 64, 64)
+    @explosions = []
   end
 
   def fire_bullet
@@ -33,6 +36,25 @@ class Player
         true
       else
         false
+      end
+    end
+  end
+
+  def kill_asteroids(asteroids, img)
+    asteroids.reject! do |asteroid|
+      @bullets.any? do |bullet|
+        if Gosu.distance(bullet.x, bullet.y, asteroid.x, asteroid.y) < asteroid.radious
+          bullet_hits_asteroid(bullet, asteroid)
+          # add 2 new smaller asteroids
+          unless asteroid.final_asteroid?
+            [90, -90].each do |angle_offset|
+              asteroids.push(Asteroid.new(img, asteroid, asteroid.angle + angle_offset))
+            end
+          end
+          true
+        else
+          false
+        end
       end
     end
   end
@@ -67,11 +89,24 @@ class Player
 
     @bullets.each(&:update)
     @bullets.select!(&:in_screen)
+
+    @explosions.reject!(&:finished?)
   end
 
   def draw
     @image.draw_rot(@x, @y, 1, @angle)
     @fire.draw
     @bullets.each(&:draw)
+    @explosions.each(&:draw)
+  end
+
+  private
+
+  def bullet_hits_asteroid(bullet, asteroid)
+    @score += 10 * asteroid.size
+    @beep.play
+    @bullets.delete(bullet)
+    # show an explosion
+    @explosions.push(Explosion.new(asteroid.x, asteroid.y, asteroid.size, @explosion_anim))
   end
 end
